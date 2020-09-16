@@ -2,4 +2,8 @@
   hosts: localhost
   tasks:
     - name: build the nginx image by running the dockerfile
-      command: docker build -t docker-test-image:v1 .
+      command: docker build -t docker-website1:v1 ./website1
+    - name: build the nginx image by running the dockerfile
+      command: docker build -t docker-website2:v1 ./website2
+    - name: build the nginx image by running the dockerfile
+      command: docker build -t docker-website3:v1 ./website3
