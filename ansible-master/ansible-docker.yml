@@ -1,0 +1,60 @@
+--
+- hosts: localhost
+  tasks:
+
+  - name: Create a network
+    docker_network:
+      name: network_loadbalancer
+
+  - name: create nginx as loadbalancer
+    docker_container:
+      name: ansible-nginx-loadbalancer
+      image: nginx
+      state: stopped
+      ports:
+        -  "8080:80"
+
+  - name: copy nginx config to loadbalancer container
+    shell: docker cp config.conf ansible-nginx-loadbalancer:etc/nginx/conf.d/default.conf
+
+
+  - name: create nginx1 container with webapp
+    docker_container:
+      name: ansible-nginx1
+      image: nginx
+      volumes:
+        - "/home/sebastian/gitrepos/ansible-projects/ansible-springboot/app1/:/usr/share/nginx/html"
+
+  - name: create nginx2 container with webapp
+    docker_container:
+      name: ansible-nginx2
+      image: nginx
+      volumes:
+        - "/home/sebastian/gitrepos/ansible-projects/ansible-springboot/app2/:/usr/share/nginx/html"
+
+
+  - name: Add a nginx1 container to network
+    docker_network:
+      name: network_loadbalancer
+      connected:
+        - ansible-nginx-loadbalancer
+      appends: yes
+
+  - name: Add a nginx1 container to network
+    docker_network:
+      name: network_loadbalancer
+      connected:
+        - ansible-nginx1
+      appends: yes
+
+  - name: Add a nginx2 container to network
+    docker_network:
+      name: network_loadbalancer
+      connected:
+        - ansible-nginx2
+      appends: yes
+
+  - name: restart nginx as loadbalancer
+    docker_container:
+      name: ansible-nginx-loadbalancer
+      restart: yes
