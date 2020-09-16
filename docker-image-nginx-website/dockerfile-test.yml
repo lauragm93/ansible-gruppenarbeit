@@ -1,0 +1,5 @@
+- name:
+  hosts: localhost
+  tasks:
+    - name: build the nginx image by running the dockerfile
+      command: docker build -t docker-test-image:v1 .
