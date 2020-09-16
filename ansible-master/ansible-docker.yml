@@ -18,27 +18,26 @@
   - name: copy nginx config to loadbalancer container
     shell: docker cp config.conf ansible-nginx-loadbalancer:etc/nginx/conf.d/default.conf
 
-
   - name: create nginx1 container with webapp
     docker_container:
       name: ansible-nginx1
       image: nginx
       volumes:
-        - "/home/sebastian/gitrepos/ansible-gruppenarbeit/ansible-master/app1/:/usr/share/nginx/html"
+        - "{{ lookup('env','PWD') }}/app1/:/usr/share/nginx/html"
 
   - name: create nginx2 container with webapp
     docker_container:
       name: ansible-nginx2
       image: nginx
       volumes:
-        - "/home/sebastian/gitrepos/ansible-gruppenarbeit/ansible-master/app2/:/usr/share/nginx/html"
+        - "{{ lookup('env','PWD') }}/app2/:/usr/share/nginx/html"
 
   - name: create nginx3 container with webapp
     docker_container:
       name: ansible-nginx3
       image: nginx
       volumes:
-        - "/home/sebastian/gitrepos/ansible-gruppenarbeit/ansible-master/app3/:/usr/share/nginx/html"
+        - "{{ lookup('env','PWD') }}/app3/:/usr/share/nginx/html"
 
 
   - name: Add a nginx1 container to network
