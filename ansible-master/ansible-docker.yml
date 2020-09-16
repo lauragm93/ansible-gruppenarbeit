@@ -1,4 +1,5 @@
---
+
+---
 - hosts: localhost
   tasks:
 
@@ -23,14 +24,21 @@
       name: ansible-nginx1
       image: nginx
       volumes:
-        - "/home/sebastian/gitrepos/ansible-projects/ansible-springboot/app1/:/usr/share/nginx/html"
+        - "/home/sebastian/gitrepos/ansible-gruppenarbeit/ansible-master/app1/:/usr/share/nginx/html"
 
   - name: create nginx2 container with webapp
     docker_container:
       name: ansible-nginx2
       image: nginx
       volumes:
-        - "/home/sebastian/gitrepos/ansible-projects/ansible-springboot/app2/:/usr/share/nginx/html"
+        - "/home/sebastian/gitrepos/ansible-gruppenarbeit/ansible-master/app2/:/usr/share/nginx/html"
+
+  - name: create nginx3 container with webapp
+    docker_container:
+      name: ansible-nginx3
+      image: nginx
+      volumes:
+        - "/home/sebastian/gitrepos/ansible-gruppenarbeit/ansible-master/app3/:/usr/share/nginx/html"
 
 
   - name: Add a nginx1 container to network
@@ -52,6 +60,13 @@
       name: network_loadbalancer
       connected:
         - ansible-nginx2
+      appends: yes
+
+  - name: Add a nginx3 container to network
+    docker_network:
+      name: network_loadbalancer
+      connected:
+        - ansible-nginx3
       appends: yes
 
   - name: restart nginx as loadbalancer
