@@ -1,5 +1,6 @@
 #! /usr/bin/zsh
 ###global variables####
+#number of nginx containers
 webapp_instances=3
 
 
