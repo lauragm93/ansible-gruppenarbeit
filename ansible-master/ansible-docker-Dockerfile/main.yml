@@ -1,0 +1,40 @@
+---
+  - name: name of playbook
+    hosts: localhost
+    tasks:
+      - name: build stage for nginx webapp
+        docker_image:
+          name: nginx-webapp
+          pull: no
+          build:
+            path: ./loadbalancer/
+          source: build
+
+      - name: create and setup docker network
+        docker_network:
+            name: nginx-loadbalancing
+
+      - name: building stage for nginx-webapp container
+        docker_container:
+          name: "nginx{{ item }}-container"
+          image: nginx-webapp:latest
+          networks:
+            - name: nginx-loadbalancing
+        with_sequence: count=3
+
+      - name: create and setup loadbalancer image
+        docker_image:
+          name: nginx-loadbalancer
+          pull: no
+          build:
+            path: nginx-html
+          source: build
+
+      - name: create loadbalancer container
+        docker_container:
+            name: nginx-loadbalancer
+            image: nginx-loadbalancer:latest
+            ports:
+              - "8080:80"
+            networks:
+              - name: nginx-loadbalancing

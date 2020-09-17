@@ -1,0 +1,19 @@
+version: "3.7"
+services:
+#service for creating nginx-webapp image
+  webapp:
+    build:
+      context: nginx-html/
+      dockerfile: Dockerfile
+    image: nginx-webapp
+
+#service for creating nginx-loadbalancer image
+  loadbalancer:
+    build:
+      context: loadbalancer/
+      dockerfile: Dockerfile
+    image: nginx-loadbalancer:latest
+    ports:
+      - "8080:80"
+    links:
+      -  "webapp:webapp-service"
